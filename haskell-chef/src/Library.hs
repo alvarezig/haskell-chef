@@ -6,7 +6,7 @@ doble numero = numero + numero
 
 type Nombre = String
 
-type TrucosDeCocina = Number -> Plato -> Plato
+type TrucosDeCocina = Number -> Number -> Plato -> Plato
 
 data Participante = UnParticipante {
 
@@ -34,21 +34,21 @@ type Peso = Number
 
 endulzar :: TrucosDeCocina
 
-endulzar gramosAzucar platoOriginal = UnPlato {
+endulzar _ gramosAzucar platoOriginal = UnPlato {
     dificultad = dificultad platoOriginal,
     componentes = ("Azucar", gramosAzucar) : componentes platoOriginal
 }
 
 salar :: TrucosDeCocina
 
-salar gramosDeSal unPlato = unPlato {
+salar  gramosDeSal _ unPlato = unPlato {
     componentes = ("Sal", gramosDeSal) : componentes unPlato
 }
 
-darSabor :: Number -> TrucosDeCocina
+darSabor :: TrucosDeCocina
 
 darSabor cantSal cantAzucar unPlato = unPlato {
-    componentes = ("Sal", cantSal) : ("Azúcar", cantAzucar) : componentes unPlato
+    componentes = ("Sal", cantSal) : ("Azucar", cantAzucar) : componentes unPlato
 }
 
 type ModificarPlato = Plato -> Plato 
@@ -70,6 +70,7 @@ simplificar unPlato
         dificultad = 5,
         componentes =  (filter esLiviano) (componentes unPlato)
     }
+
     | otherwise = unPlato
 
 esLiviano :: Componente -> Bool
@@ -78,14 +79,14 @@ esLiviano (_ , peso) = peso < 10
 
 esVegano :: Componente -> Bool
 
-esVegano ("carne", _) = False
-esVegano ("huevos", _) = False
-esVegano ("alimentos lácteos", _) = False
+esVegano ("Carne", _) = False
+esVegano ("Huevos", _) = False
+esVegano ("Alimentos Lacteos", _) = False
 esVegano _  = True
 
 esSinTacc :: Componente -> Bool
 
-esSinTacc ("harina", _) = True
+esSinTacc ("harina", _) = False
 
 esComplejo :: Plato -> Bool
 
@@ -101,7 +102,29 @@ esDificil (UnPlato dificultad _) =  dificultad > 7
 
 noAptoHipertension :: Componente -> Bool
 
-noAptoHipertension ("sal", gramosSal) = gramosSal > 2
+noAptoHipertension ("Sal", gramosSal) = gramosSal > 2
+noAptoHipertension _ = False
+
+---------------- PARTE B 
+pepe :: Participante
+
+pepe = UnParticipante {
+    nombre = "Pepe Ronccino",
+    trucosDeCocina = trucoDePepe,
+    platoDeEspecialidad = platoDePepe
+
+}
+
+trucoDePepe :: TrucosDeCocina
+
+trucoDePepe _ _ unPlato = (duplicarPorcion.simplificar.darSabor 2 5) unPlato
+
+platoDePepe :: Plato
+
+platoDePepe = UnPlato{
+    dificultad = 8, 
+    componentes = [("Sal", 5), ("Carne", 500), ("Papas", 300), ("Aceite", 20), ("Pimienta", 5), ("Huevo", 60)]
+    }
 
 
 
