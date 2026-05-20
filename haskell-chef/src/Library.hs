@@ -126,7 +126,24 @@ platoDePepe = UnPlato{
     componentes = [("Sal", 5), ("Carne", 500), ("Papas", 300), ("Aceite", 20), ("Pimienta", 5), ("Huevo", 60)]
     }
 
+---------------- PARTE C
 
+cocinar :: Participante -> Plato
 
+cocinar unParticipante = (trucosDeCocina unParticipante 0 0) (platoDeEspecialidad unParticipante) 
 
+esMejorQue :: Plato -> Plato -> Bool
 
+esMejorQue unPlato otroPlato = (dificultad unPlato) > (dificultad otroPlato) && esMenorElPeso unPlato otroPlato
+
+esMenorElPeso :: Plato -> Plato -> Bool
+
+esMenorElPeso unPlato otroPlato = sum (map snd(componentes unPlato)) < sum  (map snd(componentes otroPlato))
+
+participanteEstrella :: [Participante] -> Participante
+
+participanteEstrella [unParticipante] = unParticipante  
+
+participanteEstrella (x:xs)
+    | esMejorQue (cocinar x) (cocinar (participanteEstrella xs)) = x
+    | otherwise                                                  = participanteEstrella xs
